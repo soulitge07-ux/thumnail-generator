@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Gugi, Orbit } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,9 +12,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const gugi = Gugi({
+  variable: "--font-gugi",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const orbit = Orbit({
+  variable: "--font-orbit",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
-  title: "Youtube Thumnail Generator",
-  description: "Thumnail Generatorapp",
+  title: "Nailart AI — YouTube Thumbnail Generator",
+  description: "AI-powered YouTube thumbnail generation service",
 };
 
 export default function RootLayout({
@@ -24,8 +36,8 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="ko"
+      className={`${geistSans.variable} ${geistMono.variable} ${gugi.variable} ${orbit.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
