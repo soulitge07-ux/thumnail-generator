@@ -41,12 +41,13 @@ const Navbar = () => {
 
       {/* right spacer — keeps nav centered */}
       <div className="flex-1 flex justify-end">
-        <button
+        <a
+          href="/auth"
           className="text-xs px-4 py-2 rounded-full border border-white/15 text-[#ededed]/60 hover:text-[#ededed] hover:border-white/30 transition-all"
           style={{ fontFamily: 'var(--font-orbit)' }}
         >
           Get started
-        </button>
+        </a>
       </div>
     </header>
   );
