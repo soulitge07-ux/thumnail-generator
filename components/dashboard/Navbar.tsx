@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -75,10 +76,12 @@ export default function DashboardNavbar() {
           }}
         >
           {user?.user_metadata?.avatar_url ? (
-            <img
+            <Image
               src={user.user_metadata.avatar_url}
               alt="avatar"
-              style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }}
+              width={28}
+              height={28}
+              style={{ borderRadius: '50%', objectFit: 'cover' }}
             />
           ) : (
             <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

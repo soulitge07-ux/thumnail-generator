@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "mcp__supabase__apply_migration"
+      "mcp__supabase__apply_migration",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"cd c:/dev/test_260321; npm run dev\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"Start-Sleep -Seconds 8; Get-Content ''C:\\\\Users\\\\kukiw\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--dev-test-260321\\\\ad2b5c32-a682-4522-a777-527c7277f974\\\\tasks\\\\b3tp2v9xr.output''\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"taskkill /PID 20576 /F\")"
     ]
   },
   "enableAllProjectMcpServers": true,
