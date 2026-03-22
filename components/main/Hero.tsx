@@ -170,8 +170,8 @@ const Hero = () => {
 
       {/* hero content */}
       <div
-        className="relative flex flex-col items-center justify-center min-h-screen px-6 text-center"
-        style={{ zIndex: 2 }}
+        className="relative flex flex-col items-center min-h-screen px-6 text-center"
+        style={{ zIndex: 2, paddingTop: '96px' }}
       >
         {/* badge */}
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5">
@@ -179,7 +179,7 @@ const Hero = () => {
             <circle cx="4" cy="4" r="4" fill="#4ade80" />
           </svg>
           <span className="text-[11px] text-[#ededed]/60 tracking-wide" style={{ fontFamily: 'var(--font-orbit)' }}>
-            AI-Powered Thumbnail Generation
+            무료로 지금 바로 시작할 수 있습니다
           </span>
         </div>
 
@@ -191,10 +191,9 @@ const Hero = () => {
             fontSize: 'clamp(2.2rem, 5.5vw, 4rem)',
           }}
         >
-          유튜브 썸네일,
+          클릭을 부르는 썸네일,
           <br />
-          <span style={{ opacity: 0.45 }}>이제</span>
-          {' '}AI가 만든다
+          <span style={{ opacity: 0.45 }}>텍스트 한 줄이면</span>{' '}완성
         </h1>
 
         {/* subheadline */}
@@ -202,13 +201,13 @@ const Hero = () => {
           className="max-w-xl text-[#ededed]/50 mb-10"
           style={{
             fontFamily: 'var(--font-orbit)',
-            fontSize: 'clamp(0.9rem, 1.8vw, 1.1rem)',
-            lineHeight: '1.7',
+            fontSize: 'clamp(0.85rem, 1.8vw, 1rem)',
+            lineHeight: '1.8',
           }}
         >
-          주제와 스타일만 입력하면 클릭을 부르는 썸네일을 즉시 생성합니다.
+          스타일, 분위기, 주제를 입력하면 2K 썸네일이 즉시 생성됩니다.
           <br />
-          수천 개의 패턴을 학습한 AI가 조회수를 끌어올려 드립니다.
+          디자인 경험 없이도 클릭률 높은 썸네일을 만들어보세요.
         </p>
 
         {/* CTA */}
@@ -230,12 +229,13 @@ const Hero = () => {
             </svg>
           </a>
 
-          <button
+          <a
+            href="#features"
             className="flex items-center gap-2 rounded-full px-7 py-3.5 font-medium text-sm text-[#ededed]/70 border border-white/10 bg-white/5 transition-all hover:bg-white/10"
-            style={{ fontFamily: 'var(--font-orbit)' }}
+            style={{ fontFamily: 'var(--font-orbit)', textDecoration: 'none' }}
           >
             예시 보기
-          </button>
+          </a>
         </div>
 
         {/* thumbnail preview strip */}

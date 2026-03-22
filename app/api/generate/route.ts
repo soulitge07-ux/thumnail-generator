@@ -28,6 +28,9 @@ async function toInlineData(dataUrl: string): Promise<{ mimeType: string; data: 
 }
 
 export async function POST(request: NextRequest) {
+  let creditsBefore: number | null = null
+  let userId: string | null = null
+
   try {
     const { prompt, imageDataUrls } = await request.json()
 
@@ -42,9 +45,27 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+    userId = user.id
 
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) return Response.json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 })
+
+    // ── Credit check & deduct ───────────────────────────────────
+    const { data: userRecord } = await supabaseAdmin
+      .from('users')
+      .select('credits')
+      .eq('id', user.id)
+      .single()
+
+    creditsBefore = userRecord?.credits ?? 0
+    if (creditsBefore <= 0) {
+      return Response.json({ error: 'credits_exhausted', message: '크레딧이 부족합니다.' }, { status: 402 })
+    }
+
+    await supabaseAdmin
+      .from('users')
+      .update({ credits: creditsBefore - 1 })
+      .eq('id', user.id)
 
     // ── Insert pending record ───────────────────────────────────
     const { data: record, error: insertError } = await supabaseAdmin
@@ -53,7 +74,10 @@ export async function POST(request: NextRequest) {
       .select('id')
       .single()
 
-    if (insertError) return Response.json({ error: insertError.message }, { status: 500 })
+    if (insertError) {
+      await supabaseAdmin.from('users').update({ credits: creditsBefore }).eq('id', user.id)
+      return Response.json({ error: insertError.message }, { status: 500 })
+    }
 
     const ai = new GoogleGenAI({ apiKey })
 
@@ -153,6 +177,7 @@ ${buildThumbnailPrompt(prompt)}`
 
     if (!imageData) {
       await supabaseAdmin.from('thumnails').update({ status: 'error' }).eq('id', record.id)
+      await supabaseAdmin.from('users').update({ credits: creditsBefore }).eq('id', user.id)
       return Response.json({ error: 'No image returned from model' }, { status: 500 })
     }
 
@@ -167,6 +192,7 @@ ${buildThumbnailPrompt(prompt)}`
 
     if (uploadError) {
       await supabaseAdmin.from('thumnails').update({ status: 'error' }).eq('id', record.id)
+      await supabaseAdmin.from('users').update({ credits: creditsBefore }).eq('id', user.id)
       return Response.json({ error: uploadError.message }, { status: 500 })
     }
 
@@ -181,6 +207,10 @@ ${buildThumbnailPrompt(prompt)}`
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e)
     console.error('[generate] error:', message)
+    // 크레딧 차감 후 예기치 못한 에러 → 복원
+    if (creditsBefore !== null && userId) {
+      await supabaseAdmin.from('users').update({ credits: creditsBefore }).eq('id', userId)
+    }
     return Response.json({ error: message }, { status: 500 })
   }
 }

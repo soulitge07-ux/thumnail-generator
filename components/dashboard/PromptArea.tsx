@@ -8,6 +8,7 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import * as PopoverPrimitive from '@radix-ui/react-popover'
 import { BorderBeam } from '@/registry/magicui/border-beam'
 import GenerationArea from './GenerationArea'
+import PricingModal from './PricingModal'
 
 // ── Utilities ──────────────────────────────────────────────
 function cn(...inputs: (string | boolean | null | undefined)[]) {
@@ -111,9 +112,10 @@ const MAX_SIZE_MB = 5
 interface PromptAreaProps {
   gallery?: GalleryItem[]
   onGenerated?: (item: GalleryItem) => void
+  onCreditChanged?: () => void
 }
 
-export default function PromptArea({ gallery = [], onGenerated }: PromptAreaProps) {
+export default function PromptArea({ gallery = [], onGenerated, onCreditChanged }: PromptAreaProps) {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null)
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const closeTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -125,6 +127,7 @@ export default function PromptArea({ gallery = [], onGenerated }: PromptAreaProp
   const [result, setResult] = React.useState<string | null>(null)
   const [error, setError] = React.useState<string | null>(null)
   const [sizeError, setSizeError] = React.useState<string | null>(null)
+  const [pricingOpen, setPricingOpen] = React.useState(false)
 
   React.useLayoutEffect(() => {
     const el = textareaRef.current
@@ -217,6 +220,7 @@ export default function PromptArea({ gallery = [], onGenerated }: PromptAreaProp
       if (data.imageData) {
         const url = `data:${data.mimeType ?? 'image/png'};base64,${data.imageData}`
         setResult(url)
+        onCreditChanged?.()
         if (data.publicUrl) {
           onGenerated?.({
             id: Date.now().toString(),
@@ -225,11 +229,16 @@ export default function PromptArea({ gallery = [], onGenerated }: PromptAreaProp
             created_at: new Date().toISOString(),
           })
         }
+      } else if (res.status === 402) {
+        setPricingOpen(true)
+        onCreditChanged?.()
       } else {
         setError(data.error ?? '이미지 생성에 실패했습니다.')
+        onCreditChanged?.()
       }
     } catch (e) {
       setError(`요청 중 오류가 발생했습니다: ${e instanceof Error ? e.message : String(e)}`)
+      onCreditChanged?.()
     } finally {
       setLoading(false)
     }
@@ -254,6 +263,7 @@ export default function PromptArea({ gallery = [], onGenerated }: PromptAreaProp
 
   return (
     <div style={{ width: '100%', maxWidth: 760, display: 'flex', flexDirection: 'column', gap: 24 }}>
+      {pricingOpen && <PricingModal onClose={() => setPricingOpen(false)} />}
 
       {/* ── Top content area ── */}
       <GenerationArea
@@ -416,8 +426,6 @@ export default function PromptArea({ gallery = [], onGenerated }: PromptAreaProp
                           borderRadius: 999, gap: 5, fontSize: 12,
                           fontFamily: 'var(--font-orbit)',
                         }}
-                        onMouseEnterCapture={openRef}
-                        onMouseLeaveCapture={closeRef}
                       >
                         <ImagesIcon />
                         <span>참조</span>

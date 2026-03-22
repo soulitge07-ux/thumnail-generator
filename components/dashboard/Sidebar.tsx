@@ -13,13 +13,46 @@ export interface GalleryItem {
 interface SidebarProps {
   items: GalleryItem[]
   onSelect: (item: GalleryItem) => void
+  open?: boolean
+  onClose?: () => void
 }
 
-export default function Sidebar({ items, onSelect }: SidebarProps) {
+export default function Sidebar({ items, onSelect, open = false, onClose }: SidebarProps) {
   const [hovered, setHovered] = useState<string | null>(null)
 
   return (
+    <>
+      {/* Mobile backdrop */}
+      <style>{`
+        @media (max-width: 767px) {
+          .sidebar-aside {
+            left: 0 !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            border-radius: 0 20px 20px 0 !important;
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+          }
+          .sidebar-aside.open {
+            transform: translateX(0);
+          }
+        }
+      `}</style>
+      {open && (
+        <div
+          onClick={onClose}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 39,
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            display: 'none',
+          }}
+          className="sidebar-backdrop"
+        />
+      )}
+      <style>{`@media(max-width:767px){.sidebar-backdrop{display:block!important}}`}</style>
     <aside
+      className={`sidebar-aside${open ? ' open' : ''}`}
       style={{
         position: 'fixed',
         left: 16,
@@ -162,5 +195,6 @@ export default function Sidebar({ items, onSelect }: SidebarProps) {
         )}
       </div>
     </aside>
+    </>
   )
 }

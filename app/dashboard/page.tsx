@@ -13,6 +13,8 @@ export default function DashboardPage() {
   const router = useRouter()
   const [gallery, setGallery] = useState<GalleryItem[]>([])
   const [selected, setSelected] = useState<GalleryItem | null>(null)
+  const [creditVersion, setCreditVersion] = useState(0)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
     if (!loading && !user) router.replace('/auth')
@@ -49,11 +51,12 @@ export default function DashboardPage() {
         position: 'relative',
       }}
     >
-      <DashboardNavbar />
-      <Sidebar items={gallery} onSelect={setSelected} />
+      <DashboardNavbar refreshKey={creditVersion} onSidebarToggle={() => setSidebarOpen(v => !v)} />
+      <Sidebar items={gallery} onSelect={(item) => { setSelected(item); setSidebarOpen(false) }} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main content — offset by sidebar width */}
+      {/* Main content */}
       <main
+        className="dashboard-main"
         style={{
           minHeight: '100vh',
           display: 'flex',
@@ -61,10 +64,63 @@ export default function DashboardPage() {
           alignItems: 'center',
           justifyContent: 'center',
           padding: '96px 24px 48px',
+          paddingLeft: 'calc(200px + 16px + 24px)',
         }}
       >
-        <PromptArea gallery={gallery} onGenerated={handleGenerated} />
+        <style>{`@media(max-width:767px){.dashboard-main{padding-left:24px!important}}`}</style>
+        <PromptArea
+          gallery={gallery}
+          onGenerated={handleGenerated}
+          onCreditChanged={() => setCreditVersion(v => v + 1)}
+        />
       </main>
+
+      {/* Mobile gallery FAB */}
+      <button
+        className="gallery-fab"
+        onClick={() => setSidebarOpen(v => !v)}
+        style={{
+          display: 'none',
+          position: 'fixed',
+          bottom: 24,
+          right: 20,
+          zIndex: 45,
+          alignItems: 'center',
+          gap: 8,
+          padding: '11px 18px',
+          borderRadius: 999,
+          background: 'rgba(22,22,26,0.92)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          backdropFilter: 'blur(16px)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+          cursor: 'pointer',
+          color: '#ededed',
+          fontFamily: 'var(--font-orbit)',
+          fontSize: 12,
+        }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <path d="M21 15l-5-5L5 21" />
+        </svg>
+        내 갤러리
+        {gallery.length > 0 && (
+          <span style={{
+            background: '#a78bfa',
+            color: '#fff',
+            fontSize: 10,
+            fontFamily: 'var(--font-orbit)',
+            borderRadius: 99,
+            padding: '1px 6px',
+            minWidth: 18,
+            textAlign: 'center',
+          }}>
+            {gallery.length}
+          </span>
+        )}
+      </button>
+      <style>{`@media(max-width:767px){.gallery-fab{display:flex!important}}`}</style>
 
       {/* Lightbox */}
       {selected && (

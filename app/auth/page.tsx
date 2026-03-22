@@ -163,10 +163,35 @@ export default function AuthPage() {
   }, [])
 
   return (
-    <div style={{ position: 'fixed', inset: 0, display: 'flex', background: '#0a0a0a' }}>
+    <div className="auth-wrap" style={{ position: 'fixed', inset: 0, display: 'flex', background: '#0a0a0a' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .auth-wrap {
+            flex-direction: column !important;
+            position: relative !important;
+            inset: auto !important;
+            min-height: 100dvh;
+            overflow-y: auto;
+          }
+          .auth-left {
+            order: 2;
+            flex: none !important;
+            min-height: 60vw;
+            padding: 32px 24px !important;
+          }
+          .auth-divider { display: none !important; }
+          .auth-right {
+            order: 1;
+            flex: none !important;
+            min-height: auto !important;
+            padding: 48px 24px 36px !important;
+          }
+          .auth-back { top: 16px !important; left: 16px !important; }
+        }
+      `}</style>
 
       {/* ── LEFT 3/5 ── */}
-      <div style={{ flex: 3, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '48px 48px 40px' }}>
+      <div className="auth-left" style={{ flex: 3, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', gap: 56, padding: '48px 48px 40px' }}>
 
         {/* dark overlay */}
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', zIndex: 0 }} />
@@ -182,7 +207,7 @@ export default function AuthPage() {
         </div>
 
         {/* NAILART — oversized bottom */}
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
           <p style={{
             fontFamily: 'var(--font-gugi)',
             fontSize: 'clamp(72px, 10vw, 140px)',
@@ -202,11 +227,12 @@ export default function AuthPage() {
       </div>
 
       {/* ── DIVIDER ── */}
-      <div style={{ width: 1, background: 'rgba(255,255,255,0.12)', flexShrink: 0 }} />
+      <div className="auth-divider" style={{ width: 1, background: 'rgba(255,255,255,0.12)', flexShrink: 0 }} />
 
       {/* ── RIGHT 2/5 ── */}
       <div
         ref={containerRef}
+        className="auth-right"
         style={{
           flex: 2,
           position: 'relative',
@@ -234,6 +260,7 @@ export default function AuthPage() {
         {/* ← Back */}
         <a
           href="/"
+          className="auth-back"
           style={{
             position: 'absolute', top: 20, left: 24, zIndex: 2,
             display: 'flex', alignItems: 'center', gap: 6,
@@ -290,9 +317,9 @@ export default function AuthPage() {
 
           <p style={{ textAlign: 'center', fontSize: 10, color: 'rgba(237,237,237,0.2)', fontFamily: 'var(--font-orbit)', lineHeight: 1.8, margin: 0 }}>
             계속 진행하면{' '}
-            <a href="#" style={{ color: 'rgba(237,237,237,0.4)', textDecoration: 'underline' }}>이용약관</a>
+            <a href="/terms" target="_blank" style={{ color: 'rgba(237,237,237,0.4)', textDecoration: 'underline' }}>이용약관</a>
             {' '}및{' '}
-            <a href="#" style={{ color: 'rgba(237,237,237,0.4)', textDecoration: 'underline' }}>개인정보처리방침</a>
+            <a href="/privacy" target="_blank" style={{ color: 'rgba(237,237,237,0.4)', textDecoration: 'underline' }}>개인정보처리방침</a>
             에 동의합니다
           </p>
         </div>
