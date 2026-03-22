@@ -213,9 +213,10 @@ const Hero = () => {
 
         {/* CTA */}
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          <button
+          <a
+            href="/auth"
             className="group flex items-center gap-2 rounded-full px-7 py-3.5 font-medium text-sm text-[#0a0a0a] bg-[#ededed] transition-all hover:bg-white"
-            style={{ fontFamily: 'var(--font-orbit)' }}
+            style={{ fontFamily: 'var(--font-orbit)', textDecoration: 'none' }}
           >
             무료로 시작하기
             <svg
@@ -227,7 +228,7 @@ const Hero = () => {
             >
               <path d="M2 7H12M12 7L8 3M12 7L8 11" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
+          </a>
 
           <button
             className="flex items-center gap-2 rounded-full px-7 py-3.5 font-medium text-sm text-[#ededed]/70 border border-white/10 bg-white/5 transition-all hover:bg-white/10"

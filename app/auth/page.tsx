@@ -1,13 +1,21 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import * as THREE from 'three'
 
 export default function AuthPage() {
-  const { signInWithGoogle } = useAuth()
+  const { user, loading, signInWithGoogle } = useAuth()
+  const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/dashboard')
+    }
+  }, [user, loading, router])
 
   useEffect(() => {
     const container = containerRef.current
